@@ -1,0 +1,78 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/utils.html" as utils %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet"
+      href="{{url_for('.static', filename='watchdog.css')}}">
+{% endblock %}
+
+{% block title %}TTN Munich Platform - Node Watchdog{% endblock %}
+
+{% block content %}
+<div class="container">
+	<div class="user_menu" style="float: right;margin-top: 32px;text-align: right;font-size: 0.9em;">
+		{% if current_user.is_authenticated %}
+			Logged in as {{ current_user.get_id() }}<br>
+			<a href="{{ url_for('user_overview') }}">Devices</a> |
+			<a href="{{ url_for('logout') }}">Logout</a>
+		{% else %}
+			<a href="{{ url_for('login') }}">Login</a>
+		{% endif %}
+	</div>
+	<h2>TTN Munich Node Watchdog</h2>
+	<hr>
+	{% with messages = get_flashed_messages(with_categories=true) %}
+    	{% if messages %}
+        	{% for category, message in messages %}
+            	<div class="alert alert-{{ category | replace('message', 'info') }}" role="alert">
+            		{{ message }}
+            	</div>
+        	{% endfor %}
+    	{% endif %}
+	{% endwith %}
+
+	<div class="row">
+        <div class="col-md-12">
+			The TTN Munich Node Watchdog watches your LoRaWAN nodes, and let's you know when they've been gone for a while.
+			<h3>Requirements</h3>
+			<ul>
+				<li>A LoRaWAN node (or more)</li>
+				<li>A TTN v3 application</li>
+			</ul>
+			<h3>Quickstart</h3>
+			In your TTN v3 application, add a new Webhook (under Integrations -> Webhook). Use the following settings:
+			<table class="table table-bordered">
+				<tr>
+					<th>Webhook ID</th>
+					<td><i>choose your ID, e.g.<i><code>ttn-node-watchdog</code></td>
+				</tr>
+				<tr>
+					<th>Webhook Format</th>
+					<td>JSON</td>
+				</tr>
+				<tr>
+					<th>Base URL</th>
+					<td><code>https://watchdog.platform.ttn-munich.de/api/v1/ping/&lt;email address&gt;</code></td>
+				</tr>
+				<tr>
+					<th>Downlink API Key</th>
+					<td><i>leave emtpy</i></td>
+				</tr>
+				<tr>
+					<th>Uplink message</th>
+					<td><i>Set check box, leave text field empty</i></td>
+				</tr>
+			</table>
+			You'll receive an email from the watchdog to confirm your email address. Once you've confirmed your address, you'll receive a message for every node that hasn't sent an uplink message for more than 24h.
+		</div>
+	</div>
+
+</div>
+
+<footer class="footer">
+	<div class="container">
+		<span class="text-muted">Powered by the TTN Munich Platform. Support us on <a href="https://www.patreon.com/ttn_munich">Patreon</a>. Follow us on <a href="https://twitter.com/ttn_munich">Twitter</a>. Fork this on <a href="https://github.com/ttn-muc">GitHub</a>.</span>
+	</div>
+</footer>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/utils.html" as utils %}
+
+{% block title %}TTN Munich Platform - Node Watchdog{% endblock %}
+
+{% block content %}
+<div class="container">
+	<div class="user_menu" style="float: right;margin-top: 32px;text-align: right;font-size: 0.9em;">
+		{% if current_user.is_authenticated %}
+			Logged in as {{ current_user.get_id() }}<br>
+			<a href="{{ url_for('user_overview') }}">Devices</a> |
+			<a href="{{ url_for('logout') }}">Logout</a>
+		{% else %}
+			<a href="{{ url_for('login') }}">Login</a>
+		{% endif %}
+	</div>
+	<h2>TTN Munich Node Watchdog</h2>
+	<hr>
+	{% with messages = get_flashed_messages(with_categories=true) %}
+    	{% if messages %}
+        	{% for category, message in messages %}
+            	<div class="alert alert-{{ category | replace('message', 'info') }}" role="alert">
+            		{{ message }}
+            	</div>
+        	{% endfor %}
+    	{% endif %}
+	{% endwith %}
+
+	<div class="row">
+        <div class="col-md-12">
+			Hello {{ user.email }}
+			<table class="table">
+			  <thead>
+			    <tr>
+			      <th scope="col">Application ID</th>
+			      <th scope="col">Device ID</th>
+				  <th scope="col">Status</th>
+			      <th scope="col">Last Seen</th>
+			    </tr>
+			  </thead>
+			  <tbody>
+				{% for device in user.devices %}
+				  <td>{{ device.app_id }}</td>
+				  <td>{{ device.dev_id }}</td>
+				  <td>{{ ["Unknown", "Alive", "Offline", "Offline"][device.status] }}</td>
+				  <td>{{ device.last_seen | timeago }}</td>
+				{% endfor%}
+			  </tbody>
+			</table>
+
+		</div>
+	</div>
+
+</div>
+{% endblock %}
