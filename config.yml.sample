@@ -1,0 +1,9 @@
+general:
+  base_url: https://localhost/
+  secret_key: CREATE_YOUR_OWN_SECRET_KEY
+mail:
+  server: smtp.example.com
+  port: 25
+  login: mail@example.com
+  password: s3cr3t_pa55w0rd
+  sender: noreply@ttn-munich.de

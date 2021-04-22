@@ -39,6 +39,8 @@ cd ttn-node-watchdog
 python3 -mvenv env
 . env/bin/activate
 pip install -r requirements.txt
+cp config.yml.sample config.yml
+vi config.yml
 export FLASK_APP=main.py
 export FLASK_ENV=development
 flask init-db
