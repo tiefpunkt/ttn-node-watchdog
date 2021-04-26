@@ -53,7 +53,10 @@ def login():
 
         user = db_session.query(User).filter(User.email == email).one_or_none()
         if user:
-            mail_user_login(user)
+            token_obj = Token(user, Token.TYPE_USER_LOGIN)
+            db_session.add(token_obj)
+            db_session.commit()
+            mail_user_login(user, token_obj)
         flash("If a user exists with the given email address, we sent a login link to that address. Please check your email inbox to complete your login.")
         #if not is_safe_url(next):
         #    return flask.abort(400)
@@ -124,6 +127,8 @@ def ping(email):
     if user == None:
         user = User(email)
         db_session.add(user)
+        token_obj = Token(user, Token.TYPE_USER_VERIFICATION)
+        db_session.add(token_obj)
         db_session.commit()
         app.logger.info(f"New user created: {email}")
         mail_user_verification(user)
