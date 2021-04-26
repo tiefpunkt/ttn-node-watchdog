@@ -6,7 +6,7 @@ from datetime import datetime
 import timeago
 import json
 import yaml
-from database import db_session
+from database import db_session, init_db
 from models import User, Device, Token
 from mails import mail_user_verification, mail_user_login
 
@@ -177,5 +177,5 @@ def check_devices():
     db_session.commit()
 
 @app.cli.command("init-db")
-def init_db():
-    database.init_db()
+def cli_init_db():
+    init_db()
