@@ -131,7 +131,7 @@ def ping(email):
         db_session.add(token_obj)
         db_session.commit()
         app.logger.info(f"New user created: {email}")
-        mail_user_verification(user)
+        mail_user_verification(user, token_obj)
         return json.dumps({"success": True, "message": "User created, needs verification."}), 200
 
     if user.verified == False:
