@@ -2,7 +2,8 @@ from flask import Flask, request, abort, Response, render_template, url_for, fla
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, login_required, current_user, login_user, logout_user
 from email_validator import validate_email, EmailNotValidError
-from datetime import datetime
+from pytimeparse import parse as parse_timeframe
+from datetime import datetime, timedelta
 import timeago
 import json
 import yaml
@@ -34,6 +35,10 @@ def load_user(user_id):
 def filter_timeago(timestamp):
     now = datetime.utcnow()
     return timeago.format(timestamp, now)
+
+@app.template_filter('timeframe2str')
+def filter_timeframe2str(timeframe):
+    return str(timedelta(seconds=timeframe))
 
 @app.route('/')
 def index():
@@ -95,8 +100,9 @@ def user_overview():
     user = current_user
     return render_template('user.html', user = user)
 
-@app.route('/api/v1/ping/<email>', methods=['POST'])
-def ping(email):
+@app.route('/api/v1/ping/<email>/<timeframe>', methods=['POST'])
+@app.route('/api/v1/ping/<email>', methods=['POST'], defaults={"timeframe": None})
+def ping(email, timeframe):
     try:
         # Validate.
         valid = validate_email(email)
@@ -111,6 +117,13 @@ def ping(email):
     if not request.is_json:
         print("no valid json")
         abort(400)
+
+    if timeframe:
+        try:
+            timeframe = parse_timeframe(timeframe)
+        except:
+            print("invalid timeframe")
+            abort(400)
 
     data = request.get_json()
     app.logger.debug(data)
@@ -142,6 +155,9 @@ def ping(email):
     if device == None:
         device = Device(user, app_id, dev_id)
         db_session.add(device)
+
+    if timeframe and device.timeframe != timeframe:
+        device.timeframe = timeframe
 
     device.last_seen = datetime.utcnow()
     db_session.commit()

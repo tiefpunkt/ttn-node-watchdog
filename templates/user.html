@@ -8,6 +8,7 @@
 	<div class="user_menu" style="float: right;margin-top: 32px;text-align: right;font-size: 0.9em;">
 		{% if current_user.is_authenticated %}
 			Logged in as {{ current_user.get_id() }}<br>
+			<a href="{{ url_for('index') }}">Home</a> |
 			<a href="{{ url_for('user_overview') }}">Devices</a> |
 			<a href="{{ url_for('logout') }}">Logout</a>
 		{% else %}
@@ -36,6 +37,7 @@
 			      <th scope="col">Device ID</th>
 				  <th scope="col">Status</th>
 			      <th scope="col">Last Seen</th>
+				  <th scope="col">Alert Timeframe</th>
 			    </tr>
 			  </thead>
 			  <tbody>
@@ -44,6 +46,7 @@
 				  <td>{{ device.dev_id }}</td>
 				  <td>{{ ["Unknown", "Alive", "Offline", "Offline"][device.status] }}</td>
 				  <td>{{ device.last_seen | timeago }}</td>
+				  <td>{{ device.timeframe | timeframe2str }}</td>
 				{% endfor%}
 			  </tbody>
 			</table>

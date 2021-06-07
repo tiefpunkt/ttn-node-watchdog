@@ -52,6 +52,10 @@ To check the current device status, you need to run a regular cron job.
 flask check-devices
 ```
 
+## Changelog
+* 0.2: Add custom timeframe support
+* 0.1: Initial release
+
 ## Notes
 * SQL Alchemy:
   * https://flask.palletsprojects.com/en/1.1.x/patterns/sqlalchemy/
